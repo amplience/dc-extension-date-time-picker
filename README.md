@@ -1,57 +1,96 @@
-# date-time-extension
-
-*NON-OFFICIAL NON-SUPPORTED UI EXTENSION*
+# dc-extension-date-time
 
 ## Features
-* Can operate as just a date picker, time picker or both. Utilising what is chosen as the format (Draft 7 formats support `date`, `time` and `date-time`).
 
-* Should give region specific rendering of date and time as it makes use of `toLocaleDateString()` and `toLocaleTimeString()`.
-​
-* Will be converted to UTC meaning local time zone offset is baked into saved value.
+The extension can operate as just a date picker, time picker or both depending on what is chosen as the format. Additionally the picker can output a `string` or `number`.
 
-## Future improvements
-* Default date-time is always current system date-time. We could probably tweak this to be configurable.
+### String output
 
-* Make the start day of the week configurable (i.e. allow it to start with Sunday instead of Monday).
+If the schema field is defined as a string type, depending on the chosen format the output will be one of the three below:
 
-* Take into account in-app time zone settings (not possible with current dc-app functionality).
+- `date` - Will output `YYYY-MM-DD` (the part **before** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601))
+- `time` - Will output `hh:mm:ss.sss` plus the offset (the part **after** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601))
+- `date-time` - the whole [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) output.
 
-## Example usage:
+### Number output
 
-    "properties": {
-      "date": {
-        "title": "Just date",
-        "description": "description",
-        "type": "string",
-        "format": "date",
-        "ui:extension": {
-          "url": "https://dev-chris.s3-eu-west-1.amazonaws.com/uiex/date-picker/index.html",
-          "params": {
-            "default": "today"
-          }
-        }
-      },
-      "time": {
-        "title": "Just time",
-        "description": "description",
-        "type": "string",
-        "format": "time",
-        "ui:extension": {
-          "url": "https://dev-chris.s3-eu-west-1.amazonaws.com/uiex/date-picker/index.html"
-        }
-      },
-      "both": {
-        "title": "Both",
-        "description": "description",
-        "type": "string",
-        "format": "date-time",
-        "ui:extension": {
-          "url": "https://dev-chris.s3-eu-west-1.amazonaws.com/uiex/date-picker/index.html"
-        }
-      }
+If the schema field is defined as a number type all formats will output a timestamp that represents the number of milliseconds from 01/01/1970.
+
+**Note: this isn't a UNIX timestamp but can be easily converted to one by dividing by 1000**.
+
+- `date` - Will output the timestamp with the time rounded to `00:00:00`.
+- `time` - Will output the timestamp as if the date is `01/01/1970`.
+- `date-time` - Will output the timestamp that represents the number of milliseconds from 01/01/1970, with the milliseconds rounded to the nearest second.
+
+## Example usage
+
+```json
+"properties": {
+  "date": {
+    "title": "Just date",
+    "type": "string",
+    "format": "date",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
     }
-​
+  },
+  "time": {
+    "title": "Just time",
+    "type": "string",
+    "format": "time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "both": {
+    "title": "Both",
+    "type": "string",
+    "format": "date-time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "date-timestamp": {
+    "title": "Just date (timestamp)",
+    "type": "string",
+    "format": "date",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "time-timestamp": {
+    "title": "Just time (timestamp)",
+    "type": "number",
+    "format": "time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "both-timestamp": {
+    "title": "Both (timestamp)",
+    "type": "number",
+    "format": "date-time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  }
+}
+```
 
+## Formatting output
+
+Using JavaScript it is easy to convert the output of the extension into a date object and format it any way you need:
+
+```javascript
+const date = new Date(content.body.date);
+console.log(date.toLocaleDateString());
+```
+
+If you want to use the timestamp as a UNIX timestamp, you just need to divide it by 1000.
+
+```javascript
+const unixTimestamp = content.body['time-timestamp'] / 1000;
+```
 
 ## Get started
 
@@ -71,7 +110,6 @@ npm run dev
 Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
 
 By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
 
 ## Building and running in production mode
 
