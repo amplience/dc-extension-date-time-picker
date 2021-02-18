@@ -1,4 +1,4 @@
-# dc-extension-date-time
+# dc-extension-date-time-picker
 
 ## Features
 
@@ -8,9 +8,9 @@ The extension can operate as just a date picker, time picker or both depending o
 
 If the schema field is defined as a string type, depending on the chosen format the output will be one of the three below:
 
-- `date` - Will output `YYYY-MM-DD` (the part **before** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601))
-- `time` - Will output `hh:mm:ss.sss` plus the offset (the part **after** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601))
 - `date-time` - the whole [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) output.
+- `date` - Will output `YYYY-MM-DD` (the part **before** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
+- `time` - Will output `hh:mm:ss.sss` plus the offset (the part **after** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
 
 ### Number output
 
@@ -18,9 +18,9 @@ If the schema field is defined as a number type all formats will output a timest
 
 **Note: this isn't a UNIX timestamp but can be easily converted to one by dividing by 1000**.
 
+- `date-time` - Will output the timestamp with the milliseconds rounded to the nearest second.
 - `date` - Will output the timestamp with the time rounded to `00:00:00`.
 - `time` - Will output the timestamp as if the date is `01/01/1970`.
-- `date-time` - Will output the timestamp that represents the number of milliseconds from 01/01/1970, with the milliseconds rounded to the nearest second.
 
 ## Example usage
 
@@ -82,7 +82,12 @@ If the schema field is defined as a number type all formats will output a timest
 Using JavaScript it is easy to convert the output of the extension into a date object and format it any way you need:
 
 ```javascript
+// for all formats apart from string time only format
 const date = new Date(content.body.date);
+console.log(date.toLocaleDateString());
+
+// for the string time only format you need to prepend a date in YYYY-MM-DD format with a T seperator
+const date = new Date('2021-08-16T' + content.body.time);
 console.log(date.toLocaleDateString());
 ```
 
