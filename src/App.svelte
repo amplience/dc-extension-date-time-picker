@@ -3,6 +3,7 @@
   import { fly } from 'svelte/transition';
   import Calendar from './components/Calendar.svelte';
   import Clock from './components/Clock.svelte';
+
   let date = new Date();
   date.setMilliseconds(0);
   let editingDate = false;
