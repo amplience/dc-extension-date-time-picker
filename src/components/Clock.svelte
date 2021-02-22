@@ -1,14 +1,15 @@
 <script>
-  import { createEventDispatcher } from "svelte";
-  import { fade } from "svelte/transition";
+  import { createEventDispatcher } from 'svelte';
+  import { fade } from 'svelte/transition';
   export let date;
+
   const dispatch = createEventDispatcher();
   let hour = date.getHours() ? date.getHours() : 24;
   let minute = date.getMinutes();
   let seconds = date.getSeconds();
   let hourIndex = hour % 12;
   let size = hour > 12 ? -20 : -35;
-  let selection = "hour";
+  let selection = 'hour';
   let hourCoords = generateCoords(30, -40);
   let hourMinorCoords = generateCoords(30, -25);
   let minuteCoords = generateCoords(6, -40);
@@ -48,9 +49,200 @@
     setDate();
   }
   function setDate() {
-    dispatch("update", date);
+    dispatch('update', date);
   }
 </script>
+
+<svg class="clock" viewBox="-50 -50 100 100">
+  <circle class="clock-face" r="48" />
+
+  {#if selection === 'hour'}
+    <line class="line" y1="0" y2={size} transform="rotate({30 * hourIndex})" />
+    <g transition:fade|local>
+      {#each hourCoords as coord, i}
+        <g
+          on:mouseup={() => (selection = 'minute')}
+          on:mouseover={() => {
+            setHour(indexToHour(i));
+          }}
+          on:mousedown={() => {
+            setHour(indexToHour(i));
+          }}
+          class={indexToHour(i) === hour ? 'selected' : ''}
+        >
+          <circle r="6" cx={coord.x} cy={coord.y} class="hourCircle" />
+          <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
+            <text
+              class="label"
+              x="50%"
+              y="50%"
+              dominant-baseline="middle"
+              text-anchor="middle"
+            >
+              {indexToHour(i)}
+            </text>
+          </svg>
+        </g>
+      {/each}
+
+      {#each hourMinorCoords as coord, i}
+        <g
+          on:mouseup={() => (selection = 'minute')}
+          on:mouseover={() => {
+            setHour(indexToHour(i + 12));
+          }}
+          on:mousedown={() => {
+            setHour(indexToHour(i + 12));
+          }}
+          class={indexToHour(i + 12) === hour ? 'selected' : ''}
+        >
+          <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
+          <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
+            <text
+              class="label-inner"
+              x="50%"
+              y="50%"
+              dominant-baseline="middle"
+              text-anchor="middle"
+            >
+              {indexToHour(i + 12)}
+            </text>
+          </svg>
+        </g>
+      {/each}
+      <text
+        class="title"
+        dominant-baseline="middle"
+        text-anchor="middle"
+        paint-order="stroke"
+      >
+        Hour
+      </text>
+    </g>
+  {:else if selection === 'minute'}
+    <g transition:fade|local class="mins">
+      {#each minuteCoords as coord, i}
+        {#if i % 5 === 0}
+          <g>
+            <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
+            <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
+              <text
+                class="label show"
+                x="50%"
+                y="50%"
+                dominant-baseline="middle"
+                text-anchor="middle"
+              >
+                {i}
+              </text>
+            </svg>
+          </g>
+        {/if}
+      {/each}
+      {#each minuteCoords as coord, i}
+        {#if i === minute}
+          <g class="selected">
+            <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
+            <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
+              <text
+                class={i % 5 === 0 ? 'label show' : 'label'}
+                x="50%"
+                y="50%"
+                dominant-baseline="middle"
+                text-anchor="middle"
+              >
+                {i}
+              </text>
+            </svg>
+          </g>
+        {/if}
+      {/each}
+
+      <line class="line" y1="0" y2="-35" transform="rotate({6 * minute})" />
+      <text
+        class="title"
+        dominant-baseline="middle"
+        text-anchor="middle"
+        paint-order="stroke"
+      >
+        Minutes
+      </text>
+      {#each minuteCoords as coord, i}
+        <path
+          on:mouseup={() => (selection = 'seconds')}
+          on:mouseover={() => {
+            setMinute(i);
+          }}
+          on:mousedown={() => {
+            setMinute(i);
+          }}
+          class="hit"
+          d="M 0 0 L -2 -47 L 2 -47 Z"
+          transform="rotate({6 * i})"
+        />
+      {/each}
+    </g>
+  {:else}
+    <g transition:fade|local class="mins">
+      {#each minuteCoords as coord, i}
+        {#if i % 5 === 0}
+          <g>
+            <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
+            <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
+              <text
+                class="label show"
+                x="50%"
+                y="50%"
+                dominant-baseline="middle"
+                text-anchor="middle"
+              >
+                {i}
+              </text>
+            </svg>
+          </g>
+        {/if}
+      {/each}
+      {#each minuteCoords as coord, i}
+        {#if i === seconds}
+          <g class="selected">
+            <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
+            <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
+              <text
+                class={i % 5 === 0 ? 'label show' : 'label'}
+                x="50%"
+                y="50%"
+                dominant-baseline="middle"
+                text-anchor="middle"
+              >
+                {i}
+              </text>
+            </svg>
+          </g>
+        {/if}
+      {/each}
+      <line class="line" y1="0" y2="-35" transform="rotate({6 * seconds})" />
+      <text
+        class="title"
+        dominant-baseline="middle"
+        text-anchor="middle"
+        paint-order="stroke"
+      >
+        Seconds
+      </text>
+      {#each minuteCoords as coord, i}
+        <path
+          on:click={() => dispatch('hide')}
+          on:mouseover={() => {
+            setSeconds(i);
+          }}
+          class="hit"
+          d="M 0 0 L -2 -47 L 2 -47 Z"
+          transform="rotate({6 * i})"
+        />
+      {/each}
+    </g>
+  {/if}
+</svg>
 
 <style>
   .clock {
@@ -113,183 +305,3 @@
     stroke: white;
   }
 </style>
-
-<svg class="clock" viewBox="-50 -50 100 100">
-  <circle class="clock-face" r="48" />
-
-  {#if selection === 'hour'}
-    <line class="line" y1="0" y2={size} transform="rotate({30 * hourIndex})" />
-    <g transition:fade|local>
-
-      {#each hourCoords as coord, i}
-        <g
-          on:mouseup={() => (selection = 'minute')}
-          on:mouseover={() => {
-            setHour(indexToHour(i));
-          }}
-          on:mousedown={() => {
-            setHour(indexToHour(i));
-          }}
-          class={indexToHour(i) === hour ? 'selected' : ''}>
-          <circle r="6" cx={coord.x} cy={coord.y} class="hourCircle" />
-          <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
-            <text
-              class="label"
-              x="50%"
-              y="50%"
-              dominant-baseline="middle"
-              text-anchor="middle">
-              {indexToHour(i)}
-            </text>
-          </svg>
-        </g>
-      {/each}
-
-      {#each hourMinorCoords as coord, i}
-        <g
-          on:mouseup={() => (selection = 'minute')}
-          on:mouseover={() => {
-            setHour(indexToHour(i + 12));
-          }}
-          on:mousedown={() => {
-            setHour(indexToHour(i + 12));
-          }}
-          class={indexToHour(i + 12) === hour ? 'selected' : ''}>
-          <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
-          <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
-            <text
-              class="label-inner"
-              x="50%"
-              y="50%"
-              dominant-baseline="middle"
-              text-anchor="middle">
-              {indexToHour(i + 12)}
-            </text>
-          </svg>
-        </g>
-      {/each}
-      <text
-        class="title"
-        dominant-baseline="middle"
-        text-anchor="middle"
-        paint-order="stroke">
-        Hour
-      </text>
-    </g>
-  {:else if selection === 'minute'}
-    <g transition:fade|local class="mins">
-      {#each minuteCoords as coord, i}
-        {#if i % 5 === 0}
-          <g>
-            <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
-            <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
-              <text
-                class="label show"
-                x="50%"
-                y="50%"
-                dominant-baseline="middle"
-                text-anchor="middle">
-                {i}
-              </text>
-            </svg>
-          </g>
-        {/if}
-      {/each}
-      {#each minuteCoords as coord, i}
-        {#if i === minute}
-          <g class="selected">
-            <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
-            <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
-              <text
-                class={i % 5 === 0 ? 'label show' : 'label'}
-                x="50%"
-                y="50%"
-                dominant-baseline="middle"
-                text-anchor="middle">
-                {i}
-              </text>
-            </svg>
-          </g>
-        {/if}
-      {/each}
-
-      <line class="line" y1="0" y2="-35" transform="rotate({6 * minute})" />
-      <text
-        class="title"
-        dominant-baseline="middle"
-        text-anchor="middle"
-        paint-order="stroke">
-        Minutes
-      </text>
-      {#each minuteCoords as coord, i}
-        <path
-          on:mouseup={() => (selection = 'seconds')}
-          on:mouseover={() => {
-            setMinute(i);
-          }}
-          on:mousedown={() => {
-            setMinute(i);
-          }}
-          class="hit"
-          d="M 0 0 L -2 -47 L 2 -47 Z"
-          transform="rotate({6 * i})" />
-      {/each}
-    </g>
-  {:else}
-    <g transition:fade|local class="mins">
-
-      {#each minuteCoords as coord, i}
-        {#if i % 5 === 0}
-          <g>
-            <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
-            <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
-              <text
-                class="label show"
-                x="50%"
-                y="50%"
-                dominant-baseline="middle"
-                text-anchor="middle">
-                {i}
-              </text>
-            </svg>
-          </g>
-        {/if}
-      {/each}
-      {#each minuteCoords as coord, i}
-        {#if i === seconds}
-          <g class="selected">
-            <circle class="hourCircle" cx={coord.x} cy={coord.y} r="6" />
-            <svg x={coord.x - 10} y={coord.y - 4} width="20" height="10">
-              <text
-                class={i % 5 === 0 ? 'label show' : 'label'}
-                x="50%"
-                y="50%"
-                dominant-baseline="middle"
-                text-anchor="middle">
-                {i}
-              </text>
-            </svg>
-          </g>
-        {/if}
-      {/each}
-      <line class="line" y1="0" y2="-35" transform="rotate({6 * seconds})" />
-      <text
-        class="title"
-        dominant-baseline="middle"
-        text-anchor="middle"
-        paint-order="stroke">
-        Seconds
-      </text>
-      {#each minuteCoords as coord, i}
-        <path
-          on:click={() => dispatch('hide')}
-          on:mouseover={() => {
-            setSeconds(i);
-          }}
-          class="hit"
-          d="M 0 0 L -2 -47 L 2 -47 Z"
-          transform="rotate({6 * i})" />
-      {/each}
-    </g>
-  {/if}
-</svg>
