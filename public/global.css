@@ -3,7 +3,8 @@
   -webkit-user-select: none;
 }
 
-body {
+body,
+html {
   color: #333;
   margin: 0;
   padding: 0;

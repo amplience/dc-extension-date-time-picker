@@ -171,10 +171,11 @@
     text-decoration: none;
     cursor: default;
   }
-  .editor {
-    float: left;
-  }
   .clear {
     clear: both;
+  }
+
+  main {
+    overflow: hidden;
   }
 </style>
