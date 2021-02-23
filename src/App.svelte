@@ -31,8 +31,12 @@
         date.setDate(1);
         date.setMonth(0);
         date.setYear(1970);
+      } else if (type === 'number' && format === 'date') {
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
       }
-    } catch (e) {}
+    } catch {}
   })();
 
   function setState(f) {
@@ -167,10 +171,11 @@
     text-decoration: none;
     cursor: default;
   }
-  .editor {
-    float: left;
-  }
   .clear {
     clear: both;
+  }
+
+  main {
+    overflow: hidden;
   }
 </style>

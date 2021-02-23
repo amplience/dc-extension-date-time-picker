@@ -116,7 +116,6 @@
     text-align: center;
   }
   .date p {
-    width: 100%;
     text-align: center;
     cursor: pointer;
     display: inline-block;
@@ -152,10 +151,12 @@
     grid-template-columns: 1fr;
     grid-template-rows: 0.1fr 0.1fr 1fr;
     grid-template-areas: 'year' 'month' 'date';
-    width: 20em;
+    max-width: 20em;
+    width: 100%;
     background: #ddd;
     grid-gap: 1px;
     border: 1px solid #ddd;
+    box-sizing: border-box;
   }
 
   .year {

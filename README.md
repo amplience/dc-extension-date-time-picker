@@ -1,5 +1,7 @@
 # dc-extension-date-time-picker
 
+[![Amplience Dynamic Content](media/header.png)](https://amplience.com/dynamic-content)
+
 ## Features
 
 The extension can operate as just a date picker, time picker or both depending on what is chosen as the format. Additionally the picker can output a `string` or `number`.
@@ -52,7 +54,7 @@ If the schema field is defined as a number type all formats will output a timest
   },
   "date-timestamp": {
     "title": "Just date (timestamp)",
-    "type": "string",
+    "type": "number",
     "format": "date",
     "ui:extension": {
       "url": "https://date-time.extensions.content.amplience.net/"
@@ -97,31 +99,41 @@ If you want to use the timestamp as a UNIX timestamp, you just need to divide it
 const unixTimestamp = content.body['time-timestamp'] / 1000;
 ```
 
-## Get started
+## How to build
 
 Install the dependencies...
 
 ```bash
-cd svelte-app
-npm install
+npm ci
 ```
 
-...then start [Rollup](https://rollupjs.org):
-
-```bash
-npm run dev
-```
-
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
-
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
-## Building and running in production mode
-
-To create an optimised version of the app:
+To build a version of the app:
 
 ```bash
 npm run build
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+## Running tests
+
+```bash
+npm run test
+```
+
+## How to run locally
+
+```bash
+npm run start
+```
+
+Opens http://localhost:8080 to view it in the browser.
+
+## How to run locally over https
+
+```bash
+npm run start:secure
+```
+
+Same as `npm start` (runs the app in development mode).
+Opens https://localhost:8080 to view it in the browser.
+
+To run the mode you will need to [generate a ssl certificate (snowpack.key and snowpack.crt)](https://www.snowpack.dev/#https%2Fhttp2)
