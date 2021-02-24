@@ -60,7 +60,7 @@
         str = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
           2,
           '0'
-        )}-${date.getDate()}`;
+        )}-${String(date.getDate()).padStart(2, '0')}`;
       } else if (format === 'time') {
         str = split[1];
       }
