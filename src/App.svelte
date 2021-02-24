@@ -13,7 +13,6 @@
   let showDate = true;
   let showTime = true;
   let sdk;
-  let arealllyreallyreallyreallyreallyreallyreallyarealllyreallyreallyreallyreallyreallyreally = editingDate + editingTime + type + format;
 
   (async () => {
     try {
@@ -136,7 +135,6 @@
     </div>
   {/if}
   <div class="clear" />
-  {arealllyreallyreallyreallyreallyreallyreallyarealllyreallyreallyreallyreallyreallyreally}
 </main>
 
 <style>

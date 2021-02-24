@@ -43,6 +43,6 @@
     }
   },
   "lint-staged": {
-    "*.{js,svelte}": "npm run format --"
+    "*.{js,svelte}": "npm run format"
   }
 }
