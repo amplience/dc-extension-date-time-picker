@@ -116,7 +116,7 @@ npm run build
 ## Running tests
 
 ```bash
-npm run test
+npm test
 ```
 
 ## How to run locally
