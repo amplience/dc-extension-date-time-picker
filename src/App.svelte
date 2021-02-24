@@ -57,7 +57,10 @@
     if (format !== 'date-time') {
       let split = str.split('T');
       if (format === 'date') {
-        str = split[0];
+        str = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+          2,
+          '0'
+        )}-${date.getDate()}`;
       } else if (format === 'time') {
         str = split[1];
       }
