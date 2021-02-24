@@ -122,7 +122,7 @@ npm run test
 ## How to run locally
 
 ```bash
-npm run start
+npm start
 ```
 
 Opens http://localhost:8080 to view it in the browser.

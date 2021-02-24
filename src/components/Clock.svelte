@@ -167,7 +167,7 @@
       >
         Minutes
       </text>
-      {#each minuteCoords as coord, i}
+      {#each minuteCoords as _, i}
         <path
           on:mouseup={() => (selection = 'seconds')}
           on:mouseover={() => {

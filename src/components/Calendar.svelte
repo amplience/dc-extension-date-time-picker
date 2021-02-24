@@ -89,10 +89,10 @@
     <p class="day">F</p>
     <p class="day">S</p>
     <p class="day">S</p>
-    {#each day as d, i}
+    {#each day as _}
       <p />
     {/each}
-    {#each days as dai, i}
+    {#each days as _, i}
       <p
         class={date.getDate() - 1 === i ? 'selected' : ''}
         on:click={() => setDay(i)}
