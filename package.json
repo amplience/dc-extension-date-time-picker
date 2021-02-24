@@ -12,8 +12,8 @@
     "start:secure": "snowpack dev --secure",
     "build": "snowpack build",
     "test": "jest",
-    "lint": "eslint \"src/**/*.{js,svelte}\"",
-    "format": "eslint --fix \"src/**/*.{js,svelte}\""
+    "lint": "prettier --check \"src/**/*.{js,svelte}\" && eslint \"src/**/*.{js,svelte}\"",
+    "format": "prettier --write \"src/**/*.{js,svelte}\" && eslint --fix \"src/**/*.{js,svelte}\""
   },
   "dependencies": {
     "svelte": "^3.24.0",
@@ -43,6 +43,6 @@
     }
   },
   "lint-staged": {
-    "*.{js,svelte}": "eslint --cache --fix"
+    "*": "npm run format"
   }
 }
