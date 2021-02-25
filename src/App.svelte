@@ -12,32 +12,48 @@
   let format = 'date-time';
   let showDate = true;
   let showTime = true;
+  let unixMode = false;
   let sdk;
 
   (async () => {
     try {
       sdk = await init();
       sdk.frame.startAutoResizer();
+      unixMode = sdk.params.installation.unix || sdk.params.instance.unix;
       type = sdk.field.schema.type;
       setState(sdk.field.schema.format);
-      const d = await sdk.field.getValue();
-      if (d && (format === 'date-time' || type === 'number')) {
-        date = new Date(d);
-      } else if (d && format === 'date') {
-        date = new Date(d + 'T00:00:00');
-      } else if (d && format === 'time') {
-        date = new Date('1970-01-01T' + d);
-      } else if (type === 'number' && format === 'time') {
-        date.setDate(1);
-        date.setMonth(0);
-        date.setYear(1970);
-      } else if (type === 'number' && format === 'date') {
-        date.setHours(0);
-        date.setMinutes(0);
-        date.setSeconds(0);
+      const value = await sdk.field.getValue();
+      if (type === 'string') {
+        processStringInput(value);
+      } else if (type === 'number') {
+        processNumberInput(value);
       }
     } catch {}
   })();
+
+  function processStringInput(input) {
+    if (input && format === 'date-time' && type === 'string') {
+      date = new Date(input);
+    } else if (input && format === 'date') {
+      date = new Date(input + 'T00:00:00');
+    } else if (input && format === 'time') {
+      date = new Date('1970-01-01T' + input);
+    }
+  }
+
+  function processNumberInput(input) {
+    if (input) {
+      date = new Date(unixMode ? input * 1000 : input);
+    } else if (type === 'number' && format === 'time') {
+      date.setDate(1);
+      date.setMonth(0);
+      date.setYear(1970);
+    } else if (type === 'number' && format === 'date') {
+      date.setHours(0);
+      date.setMinutes(0);
+      date.setSeconds(0);
+    }
+  }
 
   function setState(f) {
     if (!f) {
@@ -52,7 +68,7 @@
     }
   }
 
-  function processString() {
+  function processStringOutput() {
     let str = date.toISOString();
     if (format !== 'date-time') {
       let split = str.split('T');
@@ -71,9 +87,9 @@
     date = change;
     let val;
     if (type === 'string') {
-      val = processString();
+      val = processStringOutput();
     } else if (type === 'number') {
-      val = Number(date.getTime());
+      val = unixMode ? date.getTime() / 1000 : date.getTime();
     }
     if (sdk && val) {
       sdk.field.setValue(val);

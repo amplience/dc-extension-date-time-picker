@@ -6,19 +6,33 @@
 
 The extension can operate as just a date picker, time picker or both depending on what is chosen as the format. Additionally the picker can output a `string` or `number`.
 
-### String output
+## String output
 
-If the schema field is defined as a string type, depending on the chosen format the output will be one of the three below:
+If the schema field is defined as a string type, all formats will use [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) as its base.
+
+### Formats
 
 - `date-time` - the whole [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) output.
 - `date` - Will output `YYYY-MM-DD` (the part **before** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
 - `time` - Will output `hh:mm:ss.sss` plus the offset (the part **after** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
 
-### Number output
+## Number output
 
-If the schema field is defined as a number type all formats will output a timestamp that represents the number of milliseconds from 01/01/1970.
+If the schema field is defined as a number type all formats will output a timestamp that represents the number of milliseconds from 01/01/1970. To make this a Unix timestamp (so it's seconds from 01/01/1970) you can set the `unix` parameter in your extension.
 
-**Note: this isn't a UNIX timestamp but can be easily converted to one by dividing by 1000**.
+### Time zones and timestamps
+
+It's worth noting that timestamps will always have time information baked into them which is subject to time zone differences. So if you're using a timestamp in combination with just a date selector if you're in +1 GMT for example 01/01/2021 00:00:00 will be the timestamp `1609455600`. That timestamp will be 31/12/2020 23:00:00 in GMT. This means your date would be different depending on where the final date is rendered.
+
+### Params
+
+```json
+{
+  "unix": true // makes the timestamp use seconds not milliseconds
+}
+```
+
+### Formats
 
 - `date-time` - Will output the timestamp with the milliseconds rounded to the nearest second.
 - `date` - Will output the timestamp with the time rounded to `00:00:00`.
@@ -75,6 +89,17 @@ If the schema field is defined as a number type all formats will output a timest
     "ui:extension": {
       "url": "https://date-time.extensions.content.amplience.net/"
     }
+  },
+  "unix": {
+    "title": "Unix",
+    "type": "number",
+    "format": "date-time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/",
+      "params": {
+        "unix": true
+      }
+    }
   }
 }
 ```
@@ -84,19 +109,17 @@ If the schema field is defined as a number type all formats will output a timest
 Using JavaScript it is easy to convert the output of the extension into a date object and format it any way you need:
 
 ```javascript
-// for all formats apart from string time only format
+// for most formats
 const date = new Date(content.body.date);
 console.log(date.toLocaleDateString());
 
-// for the string time only format you need to prepend a date in YYYY-MM-DD format with a T seperator
+// for the string type with time only format you need to prepend a date in YYYY-MM-DD format with a T seperator
 const date = new Date('2021-08-16T' + content.body.time);
 console.log(date.toLocaleDateString());
-```
 
-If you want to use the timestamp as a UNIX timestamp, you just need to divide it by 1000.
-
-```javascript
-const unixTimestamp = content.body['time-timestamp'] / 1000;
+// for the unix timestamps you need to multiply by 1000
+const date = new Date(content.body.unix * 1000);
+console.log(date.toLocaleDateString());
 ```
 
 ## How to build
