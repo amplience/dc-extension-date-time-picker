@@ -28,31 +28,44 @@
       } else if (type === 'number') {
         processNumberInput(value);
       }
+      roundDateTime();
     } catch {}
   })();
 
-  function processStringInput(input) {
-    if (input && format === 'date-time' && type === 'string') {
-      date = new Date(input);
-    } else if (input && format === 'date') {
-      date = new Date(input + 'T00:00:00');
-    } else if (input && format === 'time') {
-      date = new Date('1970-01-01T' + input);
-    }
-  }
-
-  function processNumberInput(input) {
-    if (input) {
-      date = new Date(unixMode ? input * 1000 : input);
-    } else if (type === 'number' && format === 'time') {
+  function roundDateTime() {
+    if (format === 'time') {
       date.setDate(1);
       date.setMonth(0);
       date.setYear(1970);
-    } else if (type === 'number' && format === 'date') {
+    } else if (format === 'date') {
       date.setHours(0);
       date.setMinutes(0);
       date.setSeconds(0);
     }
+  }
+
+  function processStringInput(input) {
+    if (!input) {
+      return;
+    }
+    switch (format) {
+      case 'date-time':
+        date = new Date(input);
+        break;
+      case 'date':
+        date = new Date(input + 'T00:00:00');
+        break;
+      case 'time':
+        date = new Date('1970-01-01T' + input);
+        break;
+    }
+  }
+
+  function processNumberInput(input) {
+    if (!input) {
+      return;
+    }
+    date = new Date(unixMode ? input * 1000 : input);
   }
 
   function setState(f) {

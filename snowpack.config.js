@@ -17,9 +17,9 @@ module.exports = {
     /* ... */
   },
   devOptions: {
-    /* ... */
+    sourcemap: true,
   },
   buildOptions: {
-    /* ... */
+    sourcemap: true,
   },
 };
