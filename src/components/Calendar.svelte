@@ -1,7 +1,8 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { pad } from '../utils';
   export let date;
-
+  $: dateObj = new Date(date);
   const months = [
     'Jan',
     'Feb',
@@ -19,21 +20,25 @@
   const dispatch = createEventDispatcher();
 
   function addYear() {
-    setDate(new Date(date.setFullYear(date.getFullYear() + 1)));
+    setDate(new Date(dateObj.setFullYear(dateObj.getFullYear() + 1)));
   }
   function subtractYear() {
-    setDate(new Date(date.setFullYear(date.getFullYear() - 1)));
+    setDate(new Date(dateObj.setFullYear(dateObj.getFullYear() - 1)));
   }
 
   function addMonth() {
-    setDate(new Date(date.setMonth(date.getMonth() + 1)));
+    setDate(new Date(dateObj.setMonth(dateObj.getMonth() + 1)));
   }
   function subtractMonth() {
-    setDate(new Date(date.setMonth(date.getMonth() - 1)));
+    setDate(new Date(dateObj.setMonth(dateObj.getMonth() - 1)));
   }
 
   function setDate(d) {
-    dispatch('update', d);
+    dateObj = d;
+    let stringDate = `${dateObj.getFullYear()}-${pad(
+      dateObj.getMonth() + 1
+    )}-${pad(dateObj.getDate())}`;
+    dispatch('update', stringDate);
   }
 
   function americanDayToBritishDay(num) {
@@ -50,8 +55,8 @@
     return americanDayToBritishDay(nd.getDay());
   }
 
-  function daysInMonth(date) {
-    let d = new Date(date);
+  function daysInMonth(dateObj) {
+    let d = new Date(dateObj);
     return new Date(d.getYear(), d.getMonth() + 1, 0).getDate();
   }
 
@@ -60,25 +65,25 @@
   }
 
   function setDay(day) {
-    let d = new Date(date);
+    let d = new Date(dateObj);
     d.setDate(day + 1);
     setDate(d);
     dispatch('hide');
   }
 
-  $: day = generateArray(startDayOfMonth(date));
-  $: days = generateArray(daysInMonth(date));
+  $: day = generateArray(startDayOfMonth(dateObj));
+  $: days = generateArray(daysInMonth(dateObj));
 </script>
 
 <div class="grid-container">
   <div class="year">
     <div on:click={subtractYear}>&leftarrow;</div>
-    <p class="yearText">{date.getFullYear()}</p>
+    <p class="yearText">{dateObj.getFullYear()}</p>
     <div on:click={addYear}>&rightarrow;</div>
   </div>
   <div class="month">
     <div on:click={subtractMonth}>&leftarrow;</div>
-    <p class="monthText">{months[date.getMonth()]}</p>
+    <p class="monthText">{months[dateObj.getMonth()]}</p>
     <div on:click={addMonth}>&rightarrow;</div>
   </div>
   <div class="date">
@@ -94,7 +99,7 @@
     {/each}
     {#each days as _, i}
       <p
-        class={date.getDate() - 1 === i ? 'selected' : ''}
+        class={dateObj.getDate() - 1 === i ? 'selected' : ''}
         on:click={() => setDay(i)}
       >
         {i + 1}
