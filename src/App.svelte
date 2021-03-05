@@ -14,6 +14,7 @@
   let showDate = true;
   let showTime = true;
   let unixMode = false;
+  let active = false;
   let sdk;
 
   (async () => {
@@ -26,6 +27,8 @@
       const value = await sdk.field.getValue();
       if (value === undefined) {
         setDefaults();
+      } else {
+        active = true;
       }
       if (type === 'string') {
         processStringInput(value);
@@ -149,6 +152,7 @@
     } else if (type === 'number') {
       val = processNumberOutput();
     }
+    active = true;
     if (sdk && val) {
       sdk.field.setValue(val);
     }
@@ -183,7 +187,7 @@
   {#if showDate}
     <div class="date" on:click={() => toggle('date')}>
       <img src="./icons/calendar.svg" alt="calendar icon" />
-      <p>
+      <p class={active ? 'active' : ''}>
         {new Date(
           dateString(
             date,
@@ -197,7 +201,7 @@
   {#if showTime}
     <div class="time" on:click={() => toggle('time')}>
       <img src="./icons/clock.svg" alt="calendar icon" />
-      <p>
+      <p class={active ? 'active' : ''}>
         {new Date(
           dateString(
             date,
@@ -260,10 +264,19 @@
     cursor: pointer;
   }
 
+  .date p,
+  .time p {
+    color: #999;
+  }
+
+  p.active {
+    color: #333;
+  }
   .label p {
     text-decoration: none;
     cursor: default;
   }
+
   .clear {
     clear: both;
   }
