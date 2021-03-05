@@ -4,8 +4,9 @@
   import { offsetMinutesToString, pad } from './utils';
   import Calendar from './components/Calendar.svelte';
   import Clock from './components/Clock.svelte';
-  let date = '1970-01-01';
-  let time = '00:00:00';
+  const now = new Date();
+  let date = nowDate();
+  let time = nowTime();
   let editingDate = false;
   let editingTime = false;
   let type = 'string';
@@ -23,6 +24,9 @@
       type = sdk.field.schema.type;
       setState(sdk.field.schema.format);
       const value = await sdk.field.getValue();
+      if (value === undefined) {
+        setDefaults();
+      }
       if (type === 'string') {
         processStringInput(value);
       } else if (type === 'number') {
@@ -30,6 +34,28 @@
       }
     } catch {}
   })();
+
+  function setDefaults() {
+    switch (format) {
+      case 'date':
+        time = '00:00:00';
+        break;
+      case 'time':
+        date = '1970-01-01';
+        break;
+    }
+  }
+  function nowDate() {
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
+      now.getDate()
+    )}`;
+  }
+
+  function nowTime() {
+    return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(
+      now.getSeconds()
+    )}`;
+  }
 
   function processStringInput(input) {
     if (!input) {
