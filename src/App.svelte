@@ -142,7 +142,7 @@
       case 'date':
         return date;
       case 'time':
-        return time;
+        return time + '.000Z';
     }
   }
   function update() {
