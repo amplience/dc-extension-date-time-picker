@@ -1,4 +1,7 @@
-/node_modules/
-/public/build/
 build
+.vscode
+public/build
+node_modules
 .DS_Store
+*.key
+*.crt

@@ -1,83 +1,162 @@
-# date-time-extension
+# dc-extension-date-time-picker
 
-*NON-OFFICIAL NON-SUPPORTED UI EXTENSION*
+[![Amplience Dynamic Content](media/header.png)](https://amplience.com/dynamic-content)
 
 ## Features
-* Can operate as just a date picker, time picker or both. Utilising what is chosen as the format (Draft 7 formats support `date`, `time` and `date-time`).
 
-* Should give region specific rendering of date and time as it makes use of `toLocaleDateString()` and `toLocaleTimeString()`.
-​
-* Will be converted to UTC meaning local time zone offset is baked into saved value.
+The extension can operate as just a date picker, time picker or both depending on what is chosen as the format. Additionally the picker can output a `string` or `number`. All dates and times will be output as UTC, with no local offsets.
 
-## Future improvements
-* Default date-time is always current system date-time. We could probably tweak this to be configurable.
+## String output
 
-* Make the start day of the week configurable (i.e. allow it to start with Sunday instead of Monday).
+If the schema field is defined as a string type, dates and times are represented in [RFC 3339, section 7.3.1](https://json-schema.org/draft/2020-12/json-schema-validation.html#rfc.section.7.3.1). This is a subset of the date format also commonly known as [ISO8601 format](https://www.iso.org/iso-8601-date-and-time-format.html).
 
-* Take into account in-app time zone settings (not possible with current dc-app functionality).
+### Formats
 
-## Example usage:
+- **date-time** - Will output `YYYY-MM-DDThh:mm:ss.sss`. Example: `2020-01-01T12:00:00.000Z`.
+- **date** - Will output `YYYY-MM-DD`, this is the part **before** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601). Example: `2020-01-01`.
+- **time** - Will output `hh:mm:ss.sss` plus the UTC offset character (Z). This is the part **after** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601). Example: `12:00:00.000Z`.
 
-    "properties": {
-      "date": {
-        "title": "Just date",
-        "description": "description",
-        "type": "string",
-        "format": "date",
-        "ui:extension": {
-          "url": "https://dev-chris.s3-eu-west-1.amazonaws.com/uiex/date-picker/index.html",
-          "params": {
-            "default": "today"
-          }
-        }
-      },
-      "time": {
-        "title": "Just time",
-        "description": "description",
-        "type": "string",
-        "format": "time",
-        "ui:extension": {
-          "url": "https://dev-chris.s3-eu-west-1.amazonaws.com/uiex/date-picker/index.html"
-        }
-      },
-      "both": {
-        "title": "Both",
-        "description": "description",
-        "type": "string",
-        "format": "date-time",
-        "ui:extension": {
-          "url": "https://dev-chris.s3-eu-west-1.amazonaws.com/uiex/date-picker/index.html"
-        }
+## Number output
+
+If the schema field is defined as a number type all formats will output a timestamp that represents the number of milliseconds from 01/01/1970. To make this a Unix timestamp (so it's seconds from 01/01/1970) you can set the `unix` parameter in your extension.
+
+### Timestamps
+
+Timestamps will always have both date and time information baked into them. In the case of a `date` format time will be set to `00:00:00.000`. In the case of `time` the date selected will be set to `1970/01/1`.
+
+### Params
+
+```json
+{
+  "unix": true // makes the timestamp use seconds not milliseconds
+}
+```
+
+### Formats
+
+- `date-time` - Will output the timestamp with the milliseconds set to 0. Example: `1577880000000`.
+- `date` - Will output the timestamp with the time set to `00:00:00.000`. Example: `1577836800000`.
+- `time` - Will output the timestamp as if the date is `01/01/1970`. Example: `43200000`.
+
+## Example usage
+
+```json
+"properties": {
+  "date": {
+    "title": "Just date",
+    "type": "string",
+    "format": "date",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "time": {
+    "title": "Just time",
+    "type": "string",
+    "format": "time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "both": {
+    "title": "Both",
+    "type": "string",
+    "format": "date-time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "date-timestamp": {
+    "title": "Just date (timestamp)",
+    "type": "number",
+    "format": "date",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "time-timestamp": {
+    "title": "Just time (timestamp)",
+    "type": "number",
+    "format": "time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "both-timestamp": {
+    "title": "Both (timestamp)",
+    "type": "number",
+    "format": "date-time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/"
+    }
+  },
+  "unix": {
+    "title": "Unix",
+    "type": "number",
+    "format": "date-time",
+    "ui:extension": {
+      "url": "https://date-time.extensions.content.amplience.net/",
+      "params": {
+        "unix": true
       }
     }
-​
+  }
+}
+```
 
+## Formatting output
 
-## Get started
+Using JavaScript it is easy to convert the output of the extension into a date object and format it any way you need:
+
+```javascript
+// for most formats
+const date = new Date(content.body.date);
+console.log(date.toLocaleDateString());
+
+// for the string type with time only format you need to prepend a date in YYYY-MM-DD format with a T seperator
+const date = new Date('2021-08-16T' + content.body.time);
+console.log(date.toLocaleDateString());
+
+// for the unix timestamps you need to multiply by 1000
+const date = new Date(content.body.unix * 1000);
+console.log(date.toLocaleDateString());
+```
+
+## How to build
 
 Install the dependencies...
 
 ```bash
-npm install
+npm ci
 ```
 
-...then start [Rollup](https://rollupjs.org):
-
-```bash
-npm run dev
-```
-
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
-
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
-
-## Building and running in production mode
-
-To create an optimised version of the app:
+To build a version of the app:
 
 ```bash
 npm run build
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+## Running tests
+
+```bash
+npm test
+```
+
+## How to run locally
+
+```bash
+npm start
+```
+
+Opens http://localhost:8080 to view it in the browser.
+
+## How to run locally over https
+
+```bash
+npm run start:secure
+```
+
+Same as `npm start` (runs the app in development mode).
+Opens https://localhost:8080 to view it in the browser.
+
+To run the mode you will need to [generate a ssl certificate (snowpack.key and snowpack.crt)](https://www.snowpack.dev/#https%2Fhttp2)
