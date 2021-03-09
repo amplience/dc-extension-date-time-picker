@@ -103,7 +103,7 @@
   }
 
   function calculateTime(d, offset) {
-    const offsetInHours = Math.floor(offset / 60);
+    const offsetInHours = Math.trunc(offset / 60);
     const remainingOffset = offset % 60;
     let offsetHours = d.getHours() + offsetInHours;
     let offsetMinutes = d.getMinutes() + remainingOffset;
@@ -112,14 +112,14 @@
       offsetMinutes = 60 + offsetMinutes;
     } else if (offsetMinutes > 59) {
       offsetHours++;
-      offsetMinutes = 60 - offsetMinutes;
+      offsetMinutes = offsetMinutes % 60;
     }
     if (offsetHours < 0) {
       d.setDate(d.getDate() - 1);
       offsetHours = 24 + offsetHours;
     } else if (offsetHours > 23) {
       d.setDate(d.getDate() + 1);
-      offsetHours = 24 - offsetHours;
+      offsetHours = offsetHours % 24;
     }
     return `${pad(offsetHours)}:${pad(offsetMinutes)}:${pad(d.getSeconds())}`;
   }
@@ -170,7 +170,7 @@
       val = processNumberOutput();
     }
     active = true;
-    if (sdk && val) {
+    if (sdk && val !== undefined) {
       sdk.field.setValue(val);
     }
   }
