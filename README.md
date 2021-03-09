@@ -4,25 +4,25 @@
 
 ## Features
 
-The extension can operate as just a date picker, time picker or both depending on what is chosen as the format. Additionally the picker can output a `string` or `number`.
+The extension can operate as just a date picker, time picker or both depending on what is chosen as the format. Additionally the picker can output a `string` or `number`. All dates and times will be output as UTC, with no local offsets.
 
 ## String output
 
-If the schema field is defined as a string type, all formats will use [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) as its base.
+If the schema field is defined as a string type, dates and times are represented in [RFC 3339, section 7.3.1](https://json-schema.org/draft/2020-12/json-schema-validation.html#rfc.section.7.3.1). This is a subset of the date format also commonly known as [ISO8601 format](https://www.iso.org/iso-8601-date-and-time-format.html).
 
 ### Formats
 
-- `date-time` - the whole [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) output.
-- `date` - Will output `YYYY-MM-DD` (the part **before** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
-- `time` - Will output `hh:mm:ss.sss` plus the offset (the part **after** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)).
+- **date-time** - Will output `YYYY-MM-DDThh:mm:ss.sss`. Example: `2020-01-01T12:00:00.000Z`.
+- **date** - Will output `YYYY-MM-DD`, this is the part **before** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601). Example: `2020-01-01`.
+- **time** - Will output `hh:mm:ss.sss` plus the UTC offset character (Z). This is the part **after** the `T` in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601). Example: `12:00:00.000Z`.
 
 ## Number output
 
 If the schema field is defined as a number type all formats will output a timestamp that represents the number of milliseconds from 01/01/1970. To make this a Unix timestamp (so it's seconds from 01/01/1970) you can set the `unix` parameter in your extension.
 
-### Time zones and timestamps
+### Timestamps
 
-It's worth noting that timestamps will always have time information baked into them which is subject to time zone differences. So if you're using a timestamp in combination with just a date selector if you're in +1 GMT for example 01/01/2021 00:00:00 will be the timestamp `1609455600`. That timestamp will be 31/12/2020 23:00:00 in GMT. This means your date would be different depending on where the final date is rendered.
+Timestamps will always have both date and time information baked into them. In the case of a `date` format time will be set to `00:00:00.000`. In the case of `time` the date selected will be set to `1970/01/1`.
 
 ### Params
 
@@ -34,9 +34,9 @@ It's worth noting that timestamps will always have time information baked into t
 
 ### Formats
 
-- `date-time` - Will output the timestamp with the milliseconds rounded to the nearest second.
-- `date` - Will output the timestamp with the time rounded to `00:00:00`.
-- `time` - Will output the timestamp as if the date is `01/01/1970`.
+- `date-time` - Will output the timestamp with the milliseconds set to 0. Example: `1577880000000`.
+- `date` - Will output the timestamp with the time set to `00:00:00.000`. Example: `1577836800000`.
+- `time` - Will output the timestamp as if the date is `01/01/1970`. Example: `43200000`.
 
 ## Example usage
 

@@ -1,14 +1,16 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { fade } from 'svelte/transition';
-  export let date;
-
+  import { pad } from '../utils';
+  export let time;
+  $: timeSplit = time.split(':');
+  $: hour =
+    Number.parseInt(timeSplit[0]) === 0 ? 24 : Number.parseInt(timeSplit[0]);
+  $: minute = Number.parseInt(timeSplit[1]);
+  $: seconds = Number.parseInt(timeSplit[2].substr(0, 2));
   const dispatch = createEventDispatcher();
-  let hour = date.getHours() ? date.getHours() : 24;
-  let minute = date.getMinutes();
-  let seconds = date.getSeconds();
-  let hourIndex = hour % 12;
-  let size = hour > 12 ? -20 : -35;
+  $: hourIndex = hour % 12;
+  $: size = hour > 12 ? -20 : -35;
   let selection = 'hour';
   let hourCoords = generateCoords(30, -40);
   let hourMinorCoords = generateCoords(30, -25);
@@ -31,25 +33,19 @@
 
   function setHour(h) {
     hour = h;
-    hourIndex = h % 12;
-    size = h > 12 ? -20 : -35;
-    const day = date.getDate();
-    date.setHours(h);
-    date.setDate(day);
     setDate();
   }
   function setMinute(m) {
     minute = m;
-    date.setMinutes(m);
     setDate();
   }
   function setSeconds(s) {
     seconds = s;
-    date.setSeconds(s);
     setDate();
   }
   function setDate() {
-    dispatch('update', date);
+    let h = hour === 24 ? 0 : hour;
+    dispatch('update', `${pad(h)}:${pad(minute)}:${pad(seconds)}`);
   }
 </script>
 
