@@ -93,18 +93,35 @@
     let stamp = unixMode ? input * 1000 : input;
     let d = new Date(stamp);
     let offset = d.getTimezoneOffset();
+    time = calculateTime(d, offset);
     date =
       pad(d.getFullYear()) +
       '-' +
       pad(d.getMonth() + 1) +
       '-' +
       pad(d.getDate());
-    time =
-      pad(d.getHours() + Math.floor(offset / 60)) +
-      ':' +
-      pad(d.getMinutes() + (offset % 60)) +
-      ':' +
-      pad(d.getSeconds());
+  }
+
+  function calculateTime(d, offset) {
+    const offsetInHours = Math.trunc(offset / 60);
+    const remainingOffset = offset % 60;
+    let offsetHours = d.getHours() + offsetInHours;
+    let offsetMinutes = d.getMinutes() + remainingOffset;
+    if (offsetMinutes < 0) {
+      offsetHours--;
+      offsetMinutes = 60 + offsetMinutes;
+    } else if (offsetMinutes > 59) {
+      offsetHours++;
+      offsetMinutes = offsetMinutes % 60;
+    }
+    if (offsetHours < 0) {
+      d.setDate(d.getDate() - 1);
+      offsetHours = 24 + offsetHours;
+    } else if (offsetHours > 23) {
+      d.setDate(d.getDate() + 1);
+      offsetHours = offsetHours % 24;
+    }
+    return `${pad(offsetHours)}:${pad(offsetMinutes)}:${pad(d.getSeconds())}`;
   }
 
   function setState(f) {
@@ -153,7 +170,7 @@
       val = processNumberOutput();
     }
     active = true;
-    if (sdk && val) {
+    if (sdk && val !== undefined) {
       sdk.field.setValue(val);
     }
   }
