@@ -87,7 +87,7 @@
   }
 
   function processNumberInput(input) {
-    if (!input) {
+    if (input === undefined || input === null || isNaN(input)) {
       return;
     }
     let stamp = unixMode ? input * 1000 : input;
