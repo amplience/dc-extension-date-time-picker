@@ -47,7 +47,7 @@ Timestamps will always have both date and time information baked into them. In t
     "type": "string",
     "format": "date",
     "ui:extension": {
-      "url": "https://date-time.extensions.content.amplience.net/"
+      "url": "https://date-time-picker.extensions.content.amplience.net"
     }
   },
   "time": {
@@ -55,7 +55,7 @@ Timestamps will always have both date and time information baked into them. In t
     "type": "string",
     "format": "time",
     "ui:extension": {
-      "url": "https://date-time.extensions.content.amplience.net/"
+      "url": "https://date-time-picker.extensions.content.amplience.net"
     }
   },
   "both": {
@@ -63,7 +63,7 @@ Timestamps will always have both date and time information baked into them. In t
     "type": "string",
     "format": "date-time",
     "ui:extension": {
-      "url": "https://date-time.extensions.content.amplience.net/"
+      "url": "https://date-time-picker.extensions.content.amplience.net"
     }
   },
   "date-timestamp": {
@@ -71,7 +71,7 @@ Timestamps will always have both date and time information baked into them. In t
     "type": "number",
     "format": "date",
     "ui:extension": {
-      "url": "https://date-time.extensions.content.amplience.net/"
+      "url": "https://date-time-picker.extensions.content.amplience.net"
     }
   },
   "time-timestamp": {
@@ -79,7 +79,7 @@ Timestamps will always have both date and time information baked into them. In t
     "type": "number",
     "format": "time",
     "ui:extension": {
-      "url": "https://date-time.extensions.content.amplience.net/"
+      "url": "https://date-time-picker.extensions.content.amplience.net"
     }
   },
   "both-timestamp": {
@@ -87,7 +87,7 @@ Timestamps will always have both date and time information baked into them. In t
     "type": "number",
     "format": "date-time",
     "ui:extension": {
-      "url": "https://date-time.extensions.content.amplience.net/"
+      "url": "https://date-time-picker.extensions.content.amplience.net"
     }
   },
   "unix": {
@@ -95,7 +95,7 @@ Timestamps will always have both date and time information baked into them. In t
     "type": "number",
     "format": "date-time",
     "ui:extension": {
-      "url": "https://date-time.extensions.content.amplience.net/",
+      "url": "https://date-time-picker.extensions.content.amplience.net",
       "params": {
         "unix": true
       }
