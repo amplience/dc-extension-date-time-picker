@@ -1,7 +1,7 @@
 {
   "name": "dc-extension-date-time-picker",
   "description": "Date time picker extension",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/amplience/dc-extension-date-time-picker",
   "repository": {
     "type": "git",
