@@ -1,7 +1,4 @@
 # dc-extension-date-time-picker
-
-[![Amplience Dynamic Content](media/header.png)](https://amplience.com/dynamic-content)
-
 ## Features
 
 The extension can operate as just a date picker, time picker or both depending on what is chosen as the format. Additionally the picker can output a `string` or `number`. All dates and times will be output as UTC, with no local offsets.
