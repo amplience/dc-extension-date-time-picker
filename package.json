@@ -16,7 +16,7 @@
     "format": "prettier --write \"src/**/*.{js,svelte,html}\" && eslint --fix \"src/**/*.{js,svelte}\""
   },
   "dependencies": {
-    "svelte": "^3.24.0",
+    "svelte": "^3.49.0",
     "dc-extensions-sdk": "^1.1.0"
   },
   "devDependencies": {
